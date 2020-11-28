@@ -1,0 +1,27 @@
+{
+  "name": "2014-14999",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^7.14.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "axios": "^0.16.2",
+    "crypto": "^1.0.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.7.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.16",
+    "morgan": "^1.10.0"
+  }
+}
