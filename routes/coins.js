@@ -11,7 +11,9 @@ router.get('/', async (req, res, next) => {
   try {
     const coins = await Coin.find({});
     const codes = [];
-    coins.forEach((e) => codes.push(String(e.code)));
+    coins.forEach((e) => {
+      if (e.code !== 'usd') codes.push(String(e.code));
+    });
     res.send(codes);
   } catch (err) {
     console.error(err);
