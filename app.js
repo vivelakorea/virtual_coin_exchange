@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 // libraries
 const express = require('express');
+const helmet = require('helmet');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
 
@@ -22,6 +23,7 @@ app.set('port', process.env.PORT = process.env.PORT || 8001);
 connect();
 
 // 잡다한 설정들
+app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

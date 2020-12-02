@@ -30,7 +30,12 @@ router.post('/register',
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         const error = new Error();
-        error.message = JSON.stringify(errors.array());
+        error.message = '';
+        errors.array().forEach((e) => {
+          error.message += `${e.param}: ${e.msg}, `;
+        });
+        error.message = error.message.slice(0, -2);
+
         error.status = 400;
         return next(error);
       }
