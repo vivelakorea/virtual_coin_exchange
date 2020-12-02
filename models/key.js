@@ -12,6 +12,10 @@ const keySchema = new Schema({
     type: String,
     required: true,
   },
+  createdAt: {
+    type: Date,
+    required: false,
+  },
 });
 
 module.exports = mongoose.model('Key', keySchema);

@@ -64,9 +64,7 @@ router.post('/register',
 router.post('/login', async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({
-      email,
-    });
+    const user = await User.findOne({ email });
 
     if (!user) {
       const error = new Error('가입되지 않은 메일입니다');
@@ -82,7 +80,7 @@ router.post('/login', async (req, res, next) => {
 
     const userObj = JSON.parse(JSON.stringify(user));
     const token = makeToken(userObj);
-    const key = new Key({ user, token });
+    const key = new Key({ user, token, createdAt: new Date() });
     await key.save();
     res.send({ key: token });
   } catch (err) {

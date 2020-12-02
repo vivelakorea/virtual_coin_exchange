@@ -112,13 +112,13 @@ router.post('/:coin_name/buy_all', verifyToken, async (req, res, next) => {
     const price = await getPrice(coinCode, coin.fullName);
 
     // usdQuantity 계산
-    const quantity = Math.floor((usdQuantity / price) * 10000) / 10000;
+    const quantity = Math.floor((Number(usdQuantity) / Number(price)) * 10000) / 10000;
     if (quantity === 0) {
       const error = new Error('이 코인을 0.0001만큼도 살 수 없습니다');
       error.status = 404;
       return next(error);
     }
-    usdQuantity -= quantity * price;
+    usdQuantity -= quantity * Number(price);
 
     // 에셋 업데이트
     await Asset.findOneAndUpdate({ user: userId, coin: usdId }, { quantity: usdQuantity });
@@ -176,20 +176,20 @@ router.post('/:coin_name/sell', verifyToken, async (req, res, next) => {
       return next(error);
     }
     let coinQuantity = coinAsset.quantity;
-    coinQuantity = Number(coinQuantity.toFixed(4));
+    coinQuantity = Number(Number(coinQuantity).toFixed(4));
 
     // coin 가격 받아오기
     const price = await getPrice(coinCode, coin.coinName);
 
     // coin 팔고싶은만큼 없으면 에러
-    if (coinQuantity < Number(quantity)) {
+    if (coinQuantity < quantity) {
       const error = new Error(`당신은 ${coinCode}를 ${coinQuantity}만큼밖에 가지고 있지 않습니다`);
       error.status = 400;
       return next(error);
     }
 
     // usd 늘리고 coin양 줄임
-    usdQuantity += price * Number(quantity);
+    usdQuantity += Number(price) * Number(quantity);
     coinQuantity -= Number(quantity);
 
     // 에셋 디비 업데이트
@@ -243,13 +243,13 @@ router.post('/:coin_name/sell_all', verifyToken, async (req, res, next) => {
       return next(error);
     }
     let coinQuantity = coinAsset.quantity;
-    coinQuantity = Number(coinQuantity.toFixed(4));
+    coinQuantity = Number(Number(coinQuantity).toFixed(4));
 
     // coin 가격 받아오기
     const price = await getPrice(coinCode, coin.coinName);
 
     // usdQuantity, coinQuantity 계산
-    usdQuantity += coinQuantity * price;
+    usdQuantity += Number(coinQuantity) * Number(price);
     // coinQuantity = 0;
 
     // 에셋 디비 업데이트
