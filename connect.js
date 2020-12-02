@@ -17,6 +17,8 @@ const connect = () => {
         console.log('mongodb connection success');
       }
     });
+  mongoose.set('useFindAndModify', false);
+  mongoose.set('useCreateIndex', true);
 };
 
 mongoose.connection.on('error', (error) => {
