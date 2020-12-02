@@ -1,13 +1,10 @@
 /* eslint-disable no-console */
 // libraries
 const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
 
 // models
 const User = require('../models/user');
 const Key = require('../models/key');
-
-dotenv.config();
 
 // eslint-disable-next-line consistent-return
 const authentication = async (req, res, next) => {

@@ -2,9 +2,6 @@
 const crypto = require('crypto');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
-
-dotenv.config();
 
 // password 암호화
 const encryptPassword = (password) => crypto.createHash('sha512').update(password).digest('base64');

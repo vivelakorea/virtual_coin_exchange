@@ -1,8 +1,5 @@
 /* eslint-disable no-console */
-const dotenv = require('dotenv');
 const Coin = require('./models/coin');
-
-dotenv.config();
 
 // eslint-disable-next-line consistent-return
 const registerCoin = async (code, fullName) => {
