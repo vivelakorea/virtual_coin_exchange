@@ -78,6 +78,9 @@ router.post('/login', async (req, res, next) => {
       return next(error);
     }
 
+    // 같은 메일주소로 다시 로그인한 경우 이전 토큰 삭제
+    if (await Key.findOne({ user })) await Key.findOneAndDelete({ user });
+
     const userObj = JSON.parse(JSON.stringify(user));
     const token = makeToken(userObj);
     const key = new Key({ user, token, createdAt: new Date() });

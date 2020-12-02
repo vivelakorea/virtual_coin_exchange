@@ -14,7 +14,11 @@ const assetSchema = new Schema({
     required: true,
     ref: 'Coin',
   },
-  quantity: Number,
+  quantity: {
+    type: Number,
+    required: true,
+  },
+
 });
 
 module.exports = mongoose.model('Asset', assetSchema);

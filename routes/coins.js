@@ -10,10 +10,13 @@ const router = express.Router();
 router.get('/', async (req, res, next) => {
   try {
     const coins = await Coin.find({});
-    const codes = [];
-    coins.forEach((e) => {
-      if (e.code !== 'usd') codes.push(String(e.code));
-    });
+    const codes = {};
+    for (let i = 0; i < coins.length; i += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      const price = await getPrice(String(coins[i].code));
+      if (coins[i].code !== 'usd') codes[String(coins[i].code)] = price;
+    }
+
     res.send(codes);
   } catch (err) {
     console.error(err);
