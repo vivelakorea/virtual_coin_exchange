@@ -8,13 +8,17 @@ const keySchema = new Schema({
     required: true,
     ref: 'User',
   },
-  token: {
+  publicKey: {
+    type: String,
+    required: true,
+  },
+  secretKey: {
     type: String,
     required: true,
   },
   createdAt: {
     type: Date,
-    required: false,
+    default: new Date(),
   },
 });
 

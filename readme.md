@@ -1,5 +1,8 @@
 # 가상 암호화폐 거래소
 
+- 2014-14999 심규장
+- 추가구현 다했어요!!!!
+
 - /register : 회원가입
 
 - /login : 로그인
@@ -18,8 +21,10 @@
 
   <br><br>
 
-file : https://codesandbox.io/s/2014-14999-mky4r
+## 주소들
 
-page : https://mky4r.sse.codesandbox.io/
+- code : https://codesandbox.io/s/2014-14999-uy1yf
 
-github : https://github.com/vivelakorea/virtual-cryptocurrency-exchange
+- page : https://uy1yf.sse.codesandbox.io
+
+<br>

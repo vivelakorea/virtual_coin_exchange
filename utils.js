@@ -1,13 +1,14 @@
+/* eslint-disable max-len */
 /* eslint-disable no-console */
 const crypto = require('crypto');
 const axios = require('axios');
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 
 // password 암호화
 const encryptPassword = (password) => crypto.createHash('sha512').update(password).digest('base64');
 
 // jwt 토큰 생성
-const makeToken = (user) => jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1h' });
+// const makeToken = (publicKey) => jwt.sign({ pub: publicKey }, process.env.JWT_SECRET, { expiresIn: '5m' });
 
 // coin의 코드를 받아서 해당 coin의 현재 가격 받아옴
 const getPrice = async (code, fullName) => {
@@ -39,6 +40,7 @@ const getPrice = async (code, fullName) => {
       }
     } else name = fullName;
     const response = await axios.get(`https://api.coingecko.com/api/v3/simple/price?ids=${name}&vs_currencies=usd`);
+    if (!response.data[name].usd) return null;
     const price = response.data[name].usd;
     return price;
   } catch (err) {
@@ -47,4 +49,4 @@ const getPrice = async (code, fullName) => {
   }
 };
 
-module.exports = { encryptPassword, makeToken, getPrice };
+module.exports = { encryptPassword, getPrice };

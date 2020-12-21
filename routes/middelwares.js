@@ -53,8 +53,24 @@ const verifyToken = async (req, res, next) => {
       return next(error);
     }
 
-    req.decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.decode(token, { complete: true });
+    const publicKey = decoded.payload.pub;
 
+    const key = await Key.findOne({ publicKey });
+    if (!key) {
+      const error = new Error('인증 에러');
+      error.status = 400;
+      return next(error);
+    }
+
+    if (new Date() - key.createdAt > 1000 * 60 * 5) { // 5분
+      const error = new Error();
+      error.name = 'TokenExpiredError';
+      throw error;
+    }
+
+    jwt.verify(token, key.secretKey);
+    req.userId = key.user;
     next();
   } catch (err) {
     if (err.name === 'TokenExpiredError') { // 유효 기간 초과

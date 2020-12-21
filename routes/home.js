@@ -1,7 +1,9 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-console */
 
 // libraries
 const express = require('express');
+const crypto = require('crypto');
 const { body, validationResult } = require('express-validator');
 
 // models
@@ -11,7 +13,7 @@ const Asset = require('../models/asset');
 const Key = require('../models/key');
 
 // self made libraries
-const { encryptPassword, makeToken } = require('../utils');
+const { encryptPassword } = require('../utils');
 const { verifyToken } = require('./middelwares');
 
 const router = express.Router();
@@ -81,11 +83,13 @@ router.post('/login', async (req, res, next) => {
     // 같은 메일주소로 다시 로그인한 경우 이전 토큰 삭제
     if (await Key.findOne({ user })) await Key.findOneAndDelete({ user });
 
-    const userObj = JSON.parse(JSON.stringify(user));
-    const token = makeToken(userObj);
-    const key = new Key({ user, token, createdAt: new Date() });
+    const publicKey = crypto.randomBytes(40).toString('hex');
+    const secretKey = crypto.randomBytes(40).toString('hex');
+    const key = new Key({
+      user, publicKey, secretKey, createdAt: Date.now(),
+    });
     await key.save();
-    res.send({ key: token });
+    res.send({ publicKey, secretKey });
   } catch (err) {
     console.error(err);
     next(err);
@@ -97,9 +101,8 @@ router.get('/assets', verifyToken, async (req, res, next) => {
   try {
     // 결과 담을 객체 quantities
     const quantities = {};
-
     // 유저 에셋 전부 찾아오기
-    const { decoded: { _id: userId } } = req;
+    const { userId } = req;
     const assets = await Asset.find({ user: userId });
 
     // 유저가 갖고 있는 코인들 이름 배열 만들기

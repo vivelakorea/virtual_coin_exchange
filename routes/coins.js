@@ -10,11 +10,12 @@ const router = express.Router();
 router.get('/', async (req, res, next) => {
   try {
     const coins = await Coin.find({});
-    const codes = {};
+    const codes = [];
     for (let i = 0; i < coins.length; i += 1) {
       // eslint-disable-next-line no-await-in-loop
-      const price = await getPrice(String(coins[i].code));
-      if (coins[i].code !== 'usd') codes[String(coins[i].code)] = price;
+      // const price = await getPrice(String(coins[i].code));
+      // if (coins[i].code !== 'usd') codes[String(coins[i].code)] = price;
+      codes.push(coins[i].code);
     }
 
     res.send(codes);
@@ -29,7 +30,7 @@ router.get('/', async (req, res, next) => {
 router.post('/:coin_name/buy', verifyToken, async (req, res, next) => {
   try {
     // eslint-disable-next-line prefer-const
-    let { body: { quantity }, params: { coin_name: coinCode }, decoded: { _id: userId } } = req;
+    let { body: { quantity }, params: { coin_name: coinCode }, userId } = req;
     quantity = Number(Number(quantity).toFixed(4));
     coinCode = coinCode.toLowerCase();
 
@@ -89,7 +90,7 @@ router.post('/:coin_name/buy', verifyToken, async (req, res, next) => {
 router.post('/:coin_name/buy_all', verifyToken, async (req, res, next) => {
   try {
     // eslint-disable-next-line prefer-const
-    let { params: { coin_name: coinCode }, decoded: { _id: userId } } = req;
+    let { params: { coin_name: coinCode }, userId } = req;
     coinCode = coinCode.toLowerCase();
 
     // 해당 coin id 찾기
@@ -148,7 +149,7 @@ router.post('/:coin_name/buy_all', verifyToken, async (req, res, next) => {
 router.post('/:coin_name/sell', verifyToken, async (req, res, next) => {
   try {
     // eslint-disable-next-line prefer-const
-    let { body: { quantity }, params: { coin_name: coinCode }, decoded: { _id: userId } } = req;
+    let { body: { quantity }, params: { coin_name: coinCode }, userId } = req;
     quantity = Number(Number(quantity).toFixed(4));
     coinCode = coinCode.toLowerCase();
 
@@ -216,7 +217,7 @@ router.post('/:coin_name/sell', verifyToken, async (req, res, next) => {
 router.post('/:coin_name/sell_all', verifyToken, async (req, res, next) => {
   try {
     // eslint-disable-next-line prefer-const
-    let { params: { coin_name: coinCode }, decoded: { _id: userId } } = req;
+    let { params: { coin_name: coinCode }, userId } = req;
     coinCode = coinCode.toLowerCase();
 
     // 해당 coin id 찾기
@@ -261,6 +262,23 @@ router.post('/:coin_name/sell_all', verifyToken, async (req, res, next) => {
     await Asset.findOneAndDelete({ user: userId, coin: coinId });
 
     res.send({ price, quantity: coinQuantity });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+// get price
+// eslint-disable-next-line consistent-return
+router.get('/:coin_name', async (req, res, next) => {
+  try {
+    const price = await getPrice(req.params.coin_name);
+    if (price === null) {
+      const error = new Error('잘못된 이름의 코인이거나 등록되지 않은 코인입니다.');
+      error.status = 400;
+      return next(error);
+    }
+    res.send({ price });
   } catch (err) {
     console.error(err);
     next(err);
